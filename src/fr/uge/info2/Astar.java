@@ -1,11 +1,11 @@
 package fr.uge.info2;
 
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.NoSuchElementException;
 
 public class Astar {
     public static ShortestPathFromOneVertex astar(Graph graph, int source, int destination, Node[] nodes) {
+        // -1 to source & destination to match .co/.gr format
         destination = destination - 1;
         source = source - 1;
         var numberOfVertices = graph.numberOfVertices();
@@ -34,7 +34,6 @@ public class Astar {
         f[source] = g[source] + h[source];
 
         while (!border.isEmpty()) {
-            steps++;
             var x = border.nextSetBit(0);
             for (var i = x + 1; i < numberOfVertices; i++) {
                 if (!border.get(i)) {
@@ -45,11 +44,10 @@ public class Astar {
                 }
             }
             if (x == destination) {
-                System.out.println(steps);
-                return new ShortestPathFromOneVertex(source, Arrays.stream(g).map(i -> (int) Math.ceil((i * 1.6))).toArray(), pi);
+                return new ShortestPathFromOneVertex(source, g, pi, steps);
             }
+            steps++;
             border.set(x, false);
-
             var iterator = graph.edgeIterator(x);
             while (iterator.hasNext()) {
                 var edge = iterator.next();
@@ -75,8 +73,4 @@ public class Astar {
         }
         throw new NoSuchElementException("No shortest path, " + destination + " is unreachable from " + source);
     }
-
-    // --> Unit test dijkstra
-    // --> Is it efficient
-    // binary heap
 }

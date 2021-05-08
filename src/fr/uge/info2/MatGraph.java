@@ -33,7 +33,6 @@ public class MatGraph implements Graph {
         if (i < 0 || i > n || j < 0 || j > n) {
             throw new IllegalArgumentException();
         }
-
         nbOfEdges++;
         mat[i][j] = value;
     }
@@ -105,12 +104,12 @@ public class MatGraph implements Graph {
     public String toGraphviz() {
         var builder = new StringBuilder("digraph G {\n\t");
         for (int i = 0; i < n; i++) {
-            builder.append(i).append(";\n\t");
+            builder.append(i + 1).append(";\n\t");
             forEachEdge(i, (edge) -> {
                 builder
-                        .append(edge.getStart())
+                        .append(edge.getStart() + 1)
                         .append(" -> ")
-                        .append(edge.getEnd())
+                        .append(edge.getEnd() + 1)
                         .append("[ label=\"")
                         .append(edge.getValue())
                         .append("\" ] ;\n\t");

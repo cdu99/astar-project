@@ -8,12 +8,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+// TODO: Unit tests and time testing with dijkstra
 public class Main {
     public static void main(String[] args) throws IOException {
         if (args.length < 1 || args.length > 3) {
             usage();
             return;
         }
+
         var filename = args[0];
         var numberOfNodes = 0;
         File coFile = new File(filename + ".co");
@@ -40,10 +42,11 @@ public class Main {
                 var line = grScan.nextLine();
                 var values = line.split("\\s+");
                 if (values[0].equals("p") && values[1].equals("sp")) {
-                    graph = new MatGraph(Integer.parseInt(values[2]));
+                    graph = new AdjGraph(Integer.parseInt(values[2]));
                 }
                 if (values[0].equals("a")) {
-                    graph.addEdge(Integer.parseInt(values[1]) - 1, Integer.parseInt(values[2]) - 1, Integer.parseInt(values[3]));
+                    graph.addEdge(Integer.parseInt(values[1]) - 1, Integer.parseInt(values[2]) - 1,
+                            (int) Math.ceil((Integer.parseInt(values[3]) * 1.6)));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -57,20 +60,29 @@ public class Main {
 
         ShortestPathFromOneVertex shortestPath;
         if (args.length == 3) {
-            shortestPath = Astar.astar(graph, Integer.parseInt(args[1]), Integer.parseInt(args[2]), nodes);
-            System.out.println(shortestPath);
+            var source = Integer.parseInt(args[1]);
+            var destination = Integer.parseInt(args[2]);
+            shortestPath = Astar.astar(graph, source, destination, nodes);
+//            System.out.println(shortestPath);
+            printResult("Astar", source, destination, shortestPath);
         } else if (args.length == 2) {
             shortestPath = Astar.astar(graph, Integer.parseInt(args[1]), numberOfNodes, nodes);
-            System.out.println(shortestPath);
+//            System.out.println(shortestPath);
+            printResult("Astar", Integer.parseInt(args[1]), numberOfNodes, shortestPath);
         } else {
             shortestPath = Astar.astar(graph, 1, numberOfNodes, nodes);
-            System.out.println(shortestPath);
+//            System.out.println(shortestPath);
+            printResult("Astar", 1, numberOfNodes, shortestPath);
         }
+    }
 
-        shortestPath.printShortestPathTo(6);
+    private static void printResult(String algorithm, int source, int destination, ShortestPathFromOneVertex path) {
+        System.out.println(algorithm + ": " + path.getSteps() + " steps.");
+        System.out.print("Path of length " + path.getWeightOfShortestPathTo(destination) + " from " + source + " to " + destination + " = ");
+        path.printShortestPathTo(destination);
     }
 
     private static void usage() {
-        System.out.println("USAGE: Astar <filename> <source> <destination>");
+        System.out.println("USAGE: Astar <filename> OR Astar <filename> <source> <destination>");
     }
 }
