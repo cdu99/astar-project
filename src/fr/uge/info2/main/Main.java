@@ -76,7 +76,7 @@ public class Main {
         }
         // If there is no source or destination given, we get the shortest path from 1 to the number of nodes in the graph
         else {
-            shortestPath = Dijkstra.dijkstra(graph, 1);
+            shortestPath = AstarImproved.astar(graph, 1, numberOfNodes, nodes);
             printResult("Astar", 1, numberOfNodes, shortestPath);
         }
     }
