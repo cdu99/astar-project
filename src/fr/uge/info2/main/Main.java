@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-// TODO: Unit tests and time testing with dijkstra
 public class Main {
     public static void main(String[] args) throws IOException {
         if (args.length < 1 || args.length > 3) {
