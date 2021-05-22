@@ -17,6 +17,7 @@ public class Astar {
         var pi = new int[numberOfVertices];
         var steps = 0;
 
+        // Initialization
         for (var i = 0; i < numberOfVertices; i++) {
             f[i] = Integer.MAX_VALUE;
             g[i] = Integer.MAX_VALUE;
@@ -34,7 +35,9 @@ public class Astar {
         f[source] = g[source] + h[source];
 
         while (!border.isEmpty()) {
+            steps++;
             var x = border.nextSetBit(0);
+            // We get the element in border with the smallest value in f[]
             for (var i = x + 1; i < numberOfVertices; i++) {
                 if (!border.get(i)) {
                     continue;
@@ -46,8 +49,9 @@ public class Astar {
             if (x == destination) {
                 return new ShortestPathFromOneVertex(source, g, pi, steps);
             }
-            steps++;
+            // Remove x from border
             border.set(x, false);
+            // For all successors y of x in the graph
             var iterator = graph.edgeIterator(x);
             while (iterator.hasNext()) {
                 var edge = iterator.next();
@@ -55,10 +59,10 @@ public class Astar {
                 var y = edge.getEnd();
 
                 if (computed.get(y)) {
-                    if (g[y] > g[x] + weight) {
+                    if (g[y] > g[x] + weight) { // Better path
                         g[y] = g[x] + weight;
                         f[y] = g[y] + h[y];
-                        if (!border.get(y)) {
+                        if (!border.get(y)) { // We need to recompute paths from y
                             border.set(y);
                         }
                     }

@@ -24,6 +24,7 @@ public class Main {
         Node[] nodes = null;
         Graph graph = null;
         try (var coScan = new Scanner(coFile); var grScan = new Scanner(grFile)) {
+            // We are parsing the .co file to get the nodes
             while (coScan.hasNextLine()) {
                 var line = coScan.nextLine();
                 var values = line.split("\\s+");
@@ -34,10 +35,12 @@ public class Main {
                 }
                 if (values[0].equals("v")) {
                     var id = Integer.parseInt(values[1]);
-                    nodes[id - 1] = new Node(id - 1, Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                    // We -1 to match .co format to array format (one starting at 1 and the other starting at 0)
+                    nodes[id - 1] = new Node(id - 1, (int) Math.ceil((Integer.parseInt(values[2]) * 1.6)),
+                            (int) Math.ceil((Integer.parseInt(values[3]) * 1.6)));
                 }
             }
-
+            // We are parsing the .gr file to get the graph with the edges
             while (grScan.hasNextLine()) {
                 var line = grScan.nextLine();
                 var values = line.split("\\s+");
@@ -53,25 +56,28 @@ public class Main {
             System.out.println("Invalid filename");
             return;
         }
-        // To print the graph .dot
+        // To get the .dot file to print the graph
         try (FileWriter writer = new FileWriter("digraph.dot")) {
             writer.write(graph.toGraphviz());
         }
 
         ShortestPathFromOneVertex shortestPath;
+        // If user gave in argument source and destination
         if (args.length == 3) {
             var source = Integer.parseInt(args[1]);
             var destination = Integer.parseInt(args[2]);
             shortestPath = Astar.astar(graph, source, destination, nodes);
-//            System.out.println(shortestPath);
             printResult("Astar", source, destination, shortestPath);
-        } else if (args.length == 2) {
+
+        }
+        // If there is only 1 argument, the argument is the source and the destination is the number of nodes in the graph
+        else if (args.length == 2) {
             shortestPath = Astar.astar(graph, Integer.parseInt(args[1]), numberOfNodes, nodes);
-//            System.out.println(shortestPath);
             printResult("Astar", Integer.parseInt(args[1]), numberOfNodes, shortestPath);
-        } else {
+        }
+        // If there is no source or destination given, we get the shortest path from 1 to the number of nodes in the graph
+        else {
             shortestPath = Astar.astar(graph, 1, numberOfNodes, nodes);
-//            System.out.println(shortestPath);
             printResult("Astar", 1, numberOfNodes, shortestPath);
         }
     }

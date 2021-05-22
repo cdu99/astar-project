@@ -39,9 +39,9 @@ public final class AdjGraph implements Graph {
             throw new IndexOutOfBoundsException();
         }
         var linkedList = adj.get(i);
-        if (isEdge(i, j)) {
-            throw new IllegalStateException("Edge is already present");
-        }
+//        if (isEdge(i, j)) {
+//            throw new IllegalStateException("Edge is already present:" + i + " -- > " + j);
+//        }
         linkedList.add(new Edge(i, j, value));
     }
 
@@ -81,6 +81,7 @@ public final class AdjGraph implements Graph {
         adj.get(i).forEach(consumer);
     }
 
+    // dot -Tpng digraph.dot -o output.png --> To print the graph
     @Override
     public String toGraphviz() {
         var builder = new StringBuilder("digraph G {\n\t");
